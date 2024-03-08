@@ -3,6 +3,7 @@
 import re
 from bs4 import formatter, BeautifulSoup as bs
 from pathlib import Path
+import sys
 
 xml_4indent_formatter = formatter.XMLFormatter(indent=4)
 NEW_ATTRS = {'required', 'invisible', 'readonly', 'column_invisible'}
@@ -11,8 +12,13 @@ percent_d_regex = re.compile("%\('?\"?[\w\.\d_]+'?\"?\)d")
 def get_files_recursive(path):
     return (str(p) for p in Path(path).glob('**/*.xml') if p.is_file())
 
-root_dir = input('Enter root directory to check (empty for current directory) : ')
-root_dir = root_dir or '.'
+# Use argument if given, else ask for input
+root_dir = '.'
+if len(sys.argv) > 1:
+    root_dir = sys.argv[1]
+else:
+    root_dir = input('Enter root directory to check (empty for current directory) : ') or '.'
+
 all_xml_files = get_files_recursive(root_dir)
 
 def normalize_domain(domain):
